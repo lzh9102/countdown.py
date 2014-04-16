@@ -4,6 +4,7 @@
 
 import time
 import argparse
+import re
 
 # TODO: i18n
 _ = lambda s: s;
@@ -29,11 +30,23 @@ class Countdown(object):
         return True
 
 def time_string(s):
-    value = int(s)
-    if value <= 0:
-        msg = _("%r: not a correct duration") % s
+    # match the pattern <hour>:<minute>:<second> (three integer numbers)
+    # hour and minute are optional
+    pattern = r'^(((?P<hour>[0-9]+):)?(?P<minute>[0-9]+):)?(?P<second>[0-9]+)$'
+    match = re.match(pattern, s)
+    if not match:
+        msg = _("%r: malformed time format") % s
         raise argparse.ArgumentTypeError(msg)
-    return value
+    matched_groups = match.groupdict()
+    # compute the total seconds
+    SECONDS_PER_MINUTE = 60
+    SECONDS_PER_HOUR = 3600
+    seconds = int(matched_groups["second"])
+    if matched_groups["minute"]:
+        seconds += int(matched_groups["minute"]) * SECONDS_PER_MINUTE
+    if matched_groups["hour"]:
+        seconds += int(matched_groups["hour"]) * SECONDS_PER_HOUR
+    return seconds
 
 def parse_args():
     parser = argparse.ArgumentParser(
