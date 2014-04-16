@@ -5,6 +5,7 @@
 import time
 import argparse
 import re
+import sys
 
 # TODO: i18n
 _ = lambda s: s;
@@ -16,7 +17,15 @@ class Countdown(object):
         self.until = time.time() + args.duration
         self.refreshInterval = 1
 
+    def restoreCursor(self):
+        sys.stdout.write("\033[u")
+
+    def clearScreen(self):
+        sys.stdout.write("\033[2J")
+
     def display(self):
+        self.clearScreen()
+        self.restoreCursor()
         diff = self.until - time.time() + 1
         print _("remaining seconds: %d") % diff
 
