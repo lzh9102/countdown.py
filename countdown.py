@@ -12,7 +12,7 @@ class Countdown(object):
 
     def __init__(self, args):
         self.args = args
-        self.until = time.time() + int(args.duration)
+        self.until = time.time() + args.duration
         self.refreshInterval = 1
 
     def display(self):
@@ -28,10 +28,17 @@ class Countdown(object):
             return False
         return True
 
+def time_string(s):
+    value = int(s)
+    if value <= 0:
+        msg = _("%r: not a correct duration") % s
+        raise argparse.ArgumentTypeError(msg)
+    return value
+
 def parse_args():
     parser = argparse.ArgumentParser(
         description=_("A simple countdown timer"))
-    parser.add_argument('duration', type=str,
+    parser.add_argument('duration', type=time_string,
                         help="the countdown duration")
     args = parser.parse_args()
     return args
