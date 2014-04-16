@@ -23,15 +23,19 @@ class Countdown(object):
         """ Move the cursor to position (row, col). Row and column indices are
             zero-based """
         sys.stdout.write("\033[%d;%df" % (row+1, col+1))
+        sys.stdout.flush()
 
     def hideCursor(self):
         sys.stdout.write("\033[?25l")
+        sys.stdout.flush()
 
     def restoreCursor(self):
         sys.stdout.write("\033[?25h")
+        sys.stdout.flush()
 
     def clearScreen(self):
         sys.stdout.write("\033[2J")
+        sys.stdout.flush()
 
     def display(self):
         self.moveCursor(0, 0)
