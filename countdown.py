@@ -57,6 +57,8 @@ class Countdown(object):
     def keyPressed(self, key):
         if key == "q":
             self.cancel = True
+        elif key == "\003": # Ctrl-C
+            raise KeyboardInterrupt()
 
     def waitForKey(self, timeout):
         """ Wait for user input for at most <timeout> seconds. Returns the
