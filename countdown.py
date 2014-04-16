@@ -41,11 +41,17 @@ class Countdown(object):
         sys.stdout.write("%s\n\r" % s)
         sys.stdout.flush()
 
+    def timeStr(self, t):
+        return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(t))
+
     def display(self):
         self.clearScreen()
         self.moveCursor(0, 0)
-        diff = self.until - time.time() + 1
-        self.printLine(_("remaining seconds: %d") % diff)
+        now = time.time()
+        diff = self.until - now + 1
+        self.printLine(_("until: %s") % self.timeStr(self.until))
+        self.printLine(_("now:   %s") % self.timeStr(now))
+        self.printLine("")
         self.printLine(_("press [q] to quit"))
 
     def keyPressed(self, key):
