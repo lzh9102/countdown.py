@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # countdown.py - A simple countdown timer in python
 # Author: Che-Huai Lin <lzh9102@gmail.com>
+# License: MIT License
 
 import time
 import argparse
