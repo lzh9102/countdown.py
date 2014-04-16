@@ -52,8 +52,11 @@ class Countdown(object):
         diff = self.until - now + 1
         self.printLine(_("until: %s") % self.timeStr(self.until))
         self.printLine(_("now:   %s") % self.timeStr(now))
+        if self.args.execute:
+            self.printLine(_("command: %s") % self.args.execute)
         self.printLine("")
-        self.printLine(_("press [q] to quit"))
+        self.printLine(_("press [q] to timeup immediately"))
+        self.printLine(_("press [^C] to cancel"))
 
     def keyPressed(self, key):
         if key == "q":
