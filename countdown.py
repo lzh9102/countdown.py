@@ -118,7 +118,7 @@ def time_string(s):
 def parse_args():
     parser = argparse.ArgumentParser(
         description=_("A simple countdown timer"))
-    parser.add_argument('duration', type=time_string,
+    parser.add_argument("duration", type=time_string,
                         help="the countdown duration")
     parser.add_argument("-e", "--execute", type=str, default=None,
                         help="the command to execute on timeup or exit")
