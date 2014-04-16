@@ -8,6 +8,7 @@ import re
 import sys
 import select
 import tty
+import os
 
 # TODO: i18n
 _ = lambda s: s;
@@ -116,6 +117,8 @@ def parse_args():
         description=_("A simple countdown timer"))
     parser.add_argument('duration', type=time_string,
                         help="the countdown duration")
+    parser.add_argument("-e", "--execute", type=str, default=None,
+                        help="the command to execute on timeup or exit")
     args = parser.parse_args()
     return args
 
@@ -125,5 +128,7 @@ if __name__ == "__main__":
     timeup = countdown.start()
     if timeup:
         print _("timeup")
+        if args.execute:
+            os.system(args.execute)
     else:
         print _("cancelled")
