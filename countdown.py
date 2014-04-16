@@ -62,6 +62,8 @@ class Countdown(object):
             return None
 
     def start(self):
+        # save original tty state
+        origmode = tty.tcgetattr(sys.stdin.fileno())
         # set raw input (read one character one time) and hide cursor
         tty.setraw(sys.stdin.fileno())
         self.hideCursor()
@@ -75,6 +77,8 @@ class Countdown(object):
         except KeyboardInterrupt:
             return False
         finally:
+            # restore stdin to normal state
+            tty.tcsetattr(sys.stdin.fileno(), tty.TCSAFLUSH, origmode)
             self.clearScreen()
             self.moveCursor(0, 0)
             self.restoreCursor()
