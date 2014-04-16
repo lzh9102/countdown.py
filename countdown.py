@@ -9,6 +9,7 @@ import sys
 import select
 import tty
 import os
+from dateutil import parser as dateparser
 
 # TODO: i18n
 _ = lambda s: s;
@@ -16,8 +17,11 @@ _ = lambda s: s;
 class Countdown(object):
 
     def __init__(self, args):
+        if args.till:
+            self.until = args.till
+        elif args.duration:
+            self.until = time.time() + args.duration
         self.args = args
-        self.until = time.time() + args.duration
         self.refreshInterval = 1
 
     def moveCursor(self, row, col):
@@ -96,6 +100,10 @@ class Countdown(object):
             self.restoreCursor()
         return True
 
+def time_value(s):
+    datetime = dateparser.parse(s)
+    return time.mktime(datetime.timetuple())
+
 def duration_value(s):
     # match the pattern <hour>:<minute>:<second> (three integer numbers)
     # hour and minute are optional
@@ -118,10 +126,14 @@ def duration_value(s):
 def parse_args():
     parser = argparse.ArgumentParser(
         description=_("A simple countdown timer"))
-    parser.add_argument("duration", type=duration_value,
-                        help="the countdown duration")
     parser.add_argument("-e", "--execute", type=str, default=None,
                         help="the command to execute on timeup or exit")
+    # time can be specified either by duration (relative) or till (absolute)
+    timespec = parser.add_mutually_exclusive_group(required=True)
+    timespec.add_argument("duration", type=duration_value, nargs="?",
+                          help="the countdown duration")
+    timespec.add_argument("-t", "--till", type=time_value,
+                          help="countdown until the given absolute time")
     args = parser.parse_args()
     return args
 
