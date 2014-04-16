@@ -17,8 +17,13 @@ class Countdown(object):
         self.until = time.time() + args.duration
         self.refreshInterval = 1
 
+    def moveCursor(self, row, col):
+        """ Move the cursor to position (row, col). Row and column indices are
+            zero-based """
+        sys.stdout.write("\033[%d;%df" % (row+1, col+1))
+
     def restoreCursor(self):
-        sys.stdout.write("\033[u")
+        self.moveCursor(0, 0)
 
     def clearScreen(self):
         sys.stdout.write("\033[2J")
