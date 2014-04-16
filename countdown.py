@@ -6,6 +6,8 @@ import time
 import argparse
 import re
 import sys
+import select
+import tty
 
 # TODO: i18n
 _ = lambda s: s;
@@ -22,25 +24,49 @@ class Countdown(object):
             zero-based """
         sys.stdout.write("\033[%d;%df" % (row+1, col+1))
 
+    def hideCursor(self):
+        sys.stdout.write("\033[?25l")
+
     def restoreCursor(self):
-        self.moveCursor(0, 0)
+        sys.stdout.write("\033[?25h")
 
     def clearScreen(self):
         sys.stdout.write("\033[2J")
 
     def display(self):
+        self.moveCursor(0, 0)
         self.clearScreen()
-        self.restoreCursor()
         diff = self.until - time.time() + 1
         print _("remaining seconds: %d") % diff
 
+    def keyPressed(self, key):
+        if key == "q":
+            self.cancel = True
+
+    def waitForKey(self, timeout):
+        """ Wait for user input for at most <timeout> seconds. Returns the
+            pressed if there is an input; None otherwise. """
+        (rlist, wlist, xlist) = select.select([sys.stdin], [], [], timeout)
+        if len(rlist) > 0:
+            return sys.stdin.read(1)
+        else:
+            return None
+
     def start(self):
+        # set raw input (read one character one time) and hide cursor
+        tty.setraw(sys.stdin.fileno())
+        self.hideCursor()
+        self.cancel = False
         try:
-            while time.time() < self.until:
+            while time.time() < self.until and (not self.cancel):
                 self.display()
-                time.sleep(self.refreshInterval)
+                key = self.waitForKey(timeout=1)
+                if key:
+                    self.keyPressed(key)
         except KeyboardInterrupt:
             return False
+        finally:
+            self.restoreCursor()
         return True
 
 def time_string(s):
