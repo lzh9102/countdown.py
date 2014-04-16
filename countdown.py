@@ -55,7 +55,7 @@ class Countdown(object):
     def waitForKey(self, timeout):
         """ Wait for user input for at most <timeout> seconds. Returns the
             pressed if there is an input; None otherwise. """
-        (rlist, wlist, xlist) = select.select([sys.stdin], [], [], timeout)
+        (rlist, _, _) = select.select([sys.stdin], [], [], timeout)
         if len(rlist) > 0:
             return sys.stdin.read(1)
         else:
