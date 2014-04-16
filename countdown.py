@@ -75,6 +75,8 @@ class Countdown(object):
         except KeyboardInterrupt:
             return False
         finally:
+            self.clearScreen()
+            self.moveCursor(0, 0)
             self.restoreCursor()
         return True
 
