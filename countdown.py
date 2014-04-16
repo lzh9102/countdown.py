@@ -96,7 +96,7 @@ class Countdown(object):
             self.restoreCursor()
         return True
 
-def time_string(s):
+def duration_value(s):
     # match the pattern <hour>:<minute>:<second> (three integer numbers)
     # hour and minute are optional
     pattern = r'^(((?P<hour>[0-9]+):)?(?P<minute>[0-9]+):)?(?P<second>[0-9]+)$'
@@ -118,7 +118,7 @@ def time_string(s):
 def parse_args():
     parser = argparse.ArgumentParser(
         description=_("A simple countdown timer"))
-    parser.add_argument("duration", type=time_string,
+    parser.add_argument("duration", type=duration_value,
                         help="the countdown duration")
     parser.add_argument("-e", "--execute", type=str, default=None,
                         help="the command to execute on timeup or exit")
